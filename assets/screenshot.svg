@@ -1,0 +1,202 @@
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="938" height="587" viewBox="0 0 938 587" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14">
+<rect width="938" height="100%" rx="12" fill="#0f1220"/>
+<rect width="938" height="36" rx="12" fill="#171b2e"/><rect y="24" width="938" height="12" fill="#171b2e"/>
+<circle cx="22" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="42" cy="18" r="6" fill="#febc2e"/>
+<circle cx="62" cy="18" r="6" fill="#28c840"/>
+<text x="469" y="23" fill="#6b7394" text-anchor="middle" font-size="13">Git Graph — claude</text>
+<text x="22.0" y="64" fill="#0085d9" textLength="51.6" lengthAdjust="spacingAndGlyphs" font-weight="700">◉ main</text>
+<text x="82.2" y="64" fill="#6b7394" textLength="103.2" lengthAdjust="spacingAndGlyphs">· 15 commits</text>
+<text x="658.4" y="64" fill="#6b7394" textLength="240.8" lengthAdjust="spacingAndGlyphs">k ↑  j ↓  r refresh  q close</text>
+<text x="22.0" y="86" fill="#6b7394" textLength="8.6" lengthAdjust="spacingAndGlyphs">⎇</text>
+<rect x="38.2" y="71" width="53.6" height="19" rx="4" fill="#22283f"/>
+<text x="39.2" y="86" fill="#d6dbeb" textLength="51.6" lengthAdjust="spacingAndGlyphs">main ▾</text>
+<text x="108.0" y="86" fill="#6b7394" textLength="51.6" lengthAdjust="spacingAndGlyphs">remote</text>
+<rect x="167.2" y="71" width="70.8" height="19" rx="4" fill="#22283f"/>
+<text x="168.2" y="86" fill="#d6dbeb" textLength="68.8" lengthAdjust="spacingAndGlyphs">origin ▾</text>
+<text x="254.2" y="86" fill="#8ab4ff" textLength="180.6" lengthAdjust="spacingAndGlyphs">p: push main → origin</text>
+<text x="22.0" y="114" fill="#6b7394" textLength="43.0" lengthAdjust="spacingAndGlyphs" font-weight="700">Graph</text>
+<text x="116.6" y="114" fill="#6b7394" textLength="94.6" lengthAdjust="spacingAndGlyphs" font-weight="700">Description</text>
+<text x="624.0" y="114" fill="#6b7394" textLength="34.4" lengthAdjust="spacingAndGlyphs" font-weight="700">Date</text>
+<text x="744.4" y="114" fill="#6b7394" textLength="51.6" lengthAdjust="spacingAndGlyphs" font-weight="700">Author</text>
+<text x="839.0" y="114" fill="#6b7394" textLength="51.6" lengthAdjust="spacingAndGlyphs" font-weight="700">Commit</text>
+<line x1="22" x2="916" y1="123" y2="123" stroke="#262c45"/>
+<circle cx="26.3" cy="138" r="4" fill="none" stroke="#0085d9" stroke-width="2" stroke-dasharray="2 2"/>
+<path d="M26.3,142V149" stroke="#0085d9" stroke-width="2" stroke-dasharray="2 2"/>
+<text x="116.6" y="143" fill="#d6dbeb" textLength="197.8" lengthAdjust="spacingAndGlyphs" font-weight="700">Uncommitted Changes (1)</text>
+<text x="624.0" y="143" fill="#6b7394" textLength="103.2" lengthAdjust="spacingAndGlyphs">22 Sep 04:06</text>
+<text x="744.4" y="143" fill="#6b7394" textLength="8.6" lengthAdjust="spacingAndGlyphs">*</text>
+<text x="839.0" y="143" fill="#6b7394" textLength="8.6" lengthAdjust="spacingAndGlyphs">*</text>
+<path d="M26.3,160V171" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<circle cx="26.3" cy="160" r="4.5" fill="#0085d9"/>
+<rect x="115.6" y="150" width="131.0" height="19" rx="4" fill="#0085d9"/>
+<text x="116.6" y="165" fill="#000" textLength="129.0" lengthAdjust="spacingAndGlyphs" font-weight="700"> feat/tag-crud </text>
+<text x="254.2" y="165" fill="#d6dbeb" textLength="206.4" lengthAdjust="spacingAndGlyphs">wip: remote tag deletion</text>
+<text x="624.0" y="165" fill="#9aa3c0" textLength="103.2" lengthAdjust="spacingAndGlyphs">22 Sep 03:13</text>
+<text x="744.4" y="165" fill="#9aa3c0" textLength="43.0" lengthAdjust="spacingAndGlyphs">Linus</text>
+<text x="839.0" y="165" fill="#6b7394" textLength="68.8" lengthAdjust="spacingAndGlyphs">ebcd1cc8</text>
+<path d="M26.3,171V182" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M26.3,182V193" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M43.5,182V193" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<circle cx="43.5" cy="182" r="4.5" fill="#d9008f"/>
+<rect x="115.6" y="172" width="70.8" height="19" rx="4" fill="#d9008f"/>
+<text x="116.6" y="187" fill="#000" textLength="68.8" lengthAdjust="spacingAndGlyphs" font-weight="700"> ◉ main </text>
+<rect x="187.0" y="172" width="68.2" height="19" rx="4" fill="#620040"/>
+<text x="185.4" y="187" fill="#fff" textLength="68.8" lengthAdjust="spacingAndGlyphs" font-style="italic"> origin </text>
+<text x="262.8" y="187" fill="#d6dbeb" textLength="137.6" lengthAdjust="spacingAndGlyphs">chore: bump deps</text>
+<text x="624.0" y="187" fill="#9aa3c0" textLength="103.2" lengthAdjust="spacingAndGlyphs">22 Sep 02:13</text>
+<text x="744.4" y="187" fill="#9aa3c0" textLength="43.0" lengthAdjust="spacingAndGlyphs">Linus</text>
+<text x="839.0" y="187" fill="#6b7394" textLength="68.8" lengthAdjust="spacingAndGlyphs">ffa49f1c</text>
+<path d="M26.3,193V204" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M26.3,204V215" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<circle cx="26.3" cy="204" r="4.5" fill="#0085d9"/>
+<path d="M43.5,193V204" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M43.5,204V215" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<rect x="115.6" y="194" width="131.0" height="19" rx="4" fill="#002841"/>
+<text x="116.6" y="209" fill="#0085d9" textLength="129.0" lengthAdjust="spacingAndGlyphs" font-weight="700"> feat/tag-crud </text>
+<rect x="247.2" y="194" width="68.2" height="19" rx="4" fill="#003c62"/>
+<text x="245.6" y="209" fill="#fff" textLength="68.8" lengthAdjust="spacingAndGlyphs" font-style="italic"> origin </text>
+<text x="323.0" y="209" fill="#d6dbeb" textLength="215.0" lengthAdjust="spacingAndGlyphs">feat: push tags to remote</text>
+<text x="624.0" y="209" fill="#9aa3c0" textLength="103.2" lengthAdjust="spacingAndGlyphs">22 Sep 01:13</text>
+<text x="744.4" y="209" fill="#9aa3c0" textLength="43.0" lengthAdjust="spacingAndGlyphs">Grace</text>
+<text x="839.0" y="209" fill="#6b7394" textLength="68.8" lengthAdjust="spacingAndGlyphs">080dd0ea</text>
+<path d="M26.3,215V226" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M26.3,226V237" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<circle cx="26.3" cy="226" r="4.5" fill="#0085d9"/>
+<path d="M43.5,215V226" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M43.5,226V237" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<text x="116.6" y="231" fill="#d6dbeb" textLength="309.6" lengthAdjust="spacingAndGlyphs">feat: create, rename and delete tags</text>
+<text x="624.0" y="231" fill="#9aa3c0" textLength="103.2" lengthAdjust="spacingAndGlyphs">22 Sep 00:13</text>
+<text x="744.4" y="231" fill="#9aa3c0" textLength="43.0" lengthAdjust="spacingAndGlyphs">Grace</text>
+<text x="839.0" y="231" fill="#6b7394" textLength="68.8" lengthAdjust="spacingAndGlyphs">c8bf0e08</text>
+<rect x="8" y="237" width="922" height="22" rx="5" fill="#2b3245"/>
+<path d="M26.3,237V248" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M26.3,248V259" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M26.3,248H30.6" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<circle cx="26.3" cy="248" r="4" fill="#0f1220" stroke="#0085d9" stroke-width="2"/>
+<path d="M30.6,248H34.9" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M34.9,248H39.2" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M43.5,237V248" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M43.5,248V259" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M39.2,248H43.5" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<rect x="115.6" y="238" width="88.0" height="19" rx="4" fill="#3a3420"/>
+<text x="116.6" y="253" fill="#f2c94c" textLength="86.0" lengthAdjust="spacingAndGlyphs"> ◆ v0.2.0 </text>
+<text x="211.2" y="253" fill="#d6dbeb" textLength="369.8" lengthAdjust="spacingAndGlyphs" font-weight="700">Merge pull request #14 from fix/narrow-pane</text>
+<text x="624.0" y="253" fill="#6b7394" textLength="103.2" lengthAdjust="spacingAndGlyphs">21 Sep 23:13</text>
+<text x="744.4" y="253" fill="#6b7394" textLength="43.0" lengthAdjust="spacingAndGlyphs">Grace</text>
+<text x="839.0" y="253" fill="#fff" textLength="68.8" lengthAdjust="spacingAndGlyphs">22e1e26e</text>
+<path d="M26.3,259V270" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M26.3,270V281" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<circle cx="26.3" cy="270" r="4.5" fill="#0085d9"/>
+<path d="M43.5,259V270" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M43.5,270V281" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<text x="116.6" y="275" fill="#d6dbeb" textLength="266.6" lengthAdjust="spacingAndGlyphs">perf: coalesce same-color spans</text>
+<text x="624.0" y="275" fill="#9aa3c0" textLength="103.2" lengthAdjust="spacingAndGlyphs">21 Sep 22:13</text>
+<text x="744.4" y="275" fill="#9aa3c0" textLength="43.0" lengthAdjust="spacingAndGlyphs">Grace</text>
+<text x="839.0" y="275" fill="#6b7394" textLength="68.8" lengthAdjust="spacingAndGlyphs">cb2b47f7</text>
+<path d="M26.3,281V292" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M26.3,292V303" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M26.3,292H30.6" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<circle cx="26.3" cy="292" r="4" fill="#0f1220" stroke="#0085d9" stroke-width="2"/>
+<path d="M30.6,292H34.9" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M34.9,292H39.2" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M43.5,281V292" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M43.5,292V303" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M39.2,292H43.5" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M43.5,292H47.800000000000004" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M47.8,292H52.099999999999994" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M52.099999999999994,292H56.4" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M56.4,292H55.699999999999996Q60.699999999999996,292 60.699999999999996,297V303" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<text x="116.6" y="297" fill="#6b7394" textLength="378.4" lengthAdjust="spacingAndGlyphs">Merge pull request #12 from feat/graph-lanes</text>
+<text x="624.0" y="297" fill="#6b7394" textLength="103.2" lengthAdjust="spacingAndGlyphs">21 Sep 21:13</text>
+<text x="744.4" y="297" fill="#6b7394" textLength="25.8" lengthAdjust="spacingAndGlyphs">Ada</text>
+<text x="839.0" y="297" fill="#6b7394" textLength="68.8" lengthAdjust="spacingAndGlyphs">9c1e45fc</text>
+<path d="M26.3,303V314" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M26.3,314V325" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M43.5,303V314" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M43.5,314V325" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<circle cx="43.5" cy="314" r="4.5" fill="#d9008f"/>
+<path d="M60.699999999999996,303V314" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M60.699999999999996,314V325" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<rect x="115.6" y="304" width="148.2" height="19" rx="4" fill="#41002b"/>
+<text x="116.6" y="319" fill="#d9008f" textLength="146.2" lengthAdjust="spacingAndGlyphs" font-weight="700"> fix/narrow-pane </text>
+<rect x="264.4" y="304" width="68.2" height="19" rx="4" fill="#620040"/>
+<text x="262.8" y="319" fill="#fff" textLength="68.8" lengthAdjust="spacingAndGlyphs" font-style="italic"> origin </text>
+<text x="340.2" y="319" fill="#d6dbeb" textLength="275.2" lengthAdjust="spacingAndGlyphs">fix: truncate refs on narrow pa…</text>
+<text x="624.0" y="319" fill="#9aa3c0" textLength="103.2" lengthAdjust="spacingAndGlyphs">21 Sep 20:13</text>
+<text x="744.4" y="319" fill="#9aa3c0" textLength="25.8" lengthAdjust="spacingAndGlyphs">Ada</text>
+<text x="839.0" y="319" fill="#6b7394" textLength="68.8" lengthAdjust="spacingAndGlyphs">dce01795</text>
+<path d="M26.3,325V336" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M26.3,336V347" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M26.3,336H30.6" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<circle cx="26.3" cy="336" r="4.5" fill="#0085d9"/>
+<path d="M30.6,336H34.9" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M34.9,336H39.2" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M39.2,336H38.5Q43.5,336 43.5,331V325" stroke="#d9008f" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M60.699999999999996,325V336" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M60.699999999999996,336V347" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<text x="116.6" y="341" fill="#d6dbeb" textLength="232.2" lengthAdjust="spacingAndGlyphs">docs: getting started guide</text>
+<text x="624.0" y="341" fill="#9aa3c0" textLength="103.2" lengthAdjust="spacingAndGlyphs">21 Sep 19:13</text>
+<text x="744.4" y="341" fill="#9aa3c0" textLength="25.8" lengthAdjust="spacingAndGlyphs">Ada</text>
+<text x="839.0" y="341" fill="#6b7394" textLength="68.8" lengthAdjust="spacingAndGlyphs">57dd6ad7</text>
+<path d="M26.3,347V358" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M26.3,358V369" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M60.699999999999996,347V358" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M60.699999999999996,358V369" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<circle cx="60.699999999999996" cy="358" r="4.5" fill="#00d90a"/>
+<rect x="115.6" y="348" width="156.8" height="19" rx="4" fill="#00d90a"/>
+<text x="116.6" y="363" fill="#000" textLength="154.8" lengthAdjust="spacingAndGlyphs" font-weight="700"> feat/graph-lanes </text>
+<text x="280.0" y="363" fill="#d6dbeb" textLength="223.6" lengthAdjust="spacingAndGlyphs">test: fork and merge cases</text>
+<text x="624.0" y="363" fill="#9aa3c0" textLength="103.2" lengthAdjust="spacingAndGlyphs">21 Sep 18:13</text>
+<text x="744.4" y="363" fill="#9aa3c0" textLength="25.8" lengthAdjust="spacingAndGlyphs">Ada</text>
+<text x="839.0" y="363" fill="#6b7394" textLength="68.8" lengthAdjust="spacingAndGlyphs">b26bee40</text>
+<path d="M26.3,369V380" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M26.3,380V391" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M60.699999999999996,369V380" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M60.699999999999996,380V391" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<circle cx="60.699999999999996" cy="380" r="4.5" fill="#00d90a"/>
+<text x="116.6" y="385" fill="#d6dbeb" textLength="206.4" lengthAdjust="spacingAndGlyphs">feat: lane layout engine</text>
+<text x="624.0" y="385" fill="#9aa3c0" textLength="103.2" lengthAdjust="spacingAndGlyphs">21 Sep 17:13</text>
+<text x="744.4" y="385" fill="#9aa3c0" textLength="25.8" lengthAdjust="spacingAndGlyphs">Ada</text>
+<text x="839.0" y="385" fill="#6b7394" textLength="68.8" lengthAdjust="spacingAndGlyphs">d9285341</text>
+<path d="M26.3,391V402" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M26.3,402V413" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M26.3,402H30.6" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<circle cx="26.3" cy="402" r="4.5" fill="#0085d9"/>
+<path d="M30.6,402H34.9" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M34.9,402H39.2" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M39.2,402H43.5" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M43.5,402H47.800000000000004" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M47.8,402H52.099999999999994" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M52.099999999999994,402H56.4" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M56.4,402H55.699999999999996Q60.699999999999996,402 60.699999999999996,397V391" stroke="#00d90a" stroke-width="2" fill="none" stroke-linecap="round"/>
+<rect x="115.6" y="392" width="88.0" height="19" rx="4" fill="#3a3420"/>
+<text x="116.6" y="407" fill="#f2c94c" textLength="86.0" lengthAdjust="spacingAndGlyphs"> ◆ v0.1.0 </text>
+<text x="211.2" y="407" fill="#d6dbeb" textLength="189.2" lengthAdjust="spacingAndGlyphs">feat: project scaffold</text>
+<text x="624.0" y="407" fill="#9aa3c0" textLength="103.2" lengthAdjust="spacingAndGlyphs">21 Sep 16:13</text>
+<text x="744.4" y="407" fill="#9aa3c0" textLength="25.8" lengthAdjust="spacingAndGlyphs">Ada</text>
+<text x="839.0" y="407" fill="#6b7394" textLength="68.8" lengthAdjust="spacingAndGlyphs">be646710</text>
+<path d="M26.3,413V424" stroke="#0085d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+<circle cx="26.3" cy="424" r="4.5" fill="#0085d9"/>
+<text x="116.6" y="429" fill="#d6dbeb" textLength="180.6" lengthAdjust="spacingAndGlyphs">chore: initial commit</text>
+<text x="624.0" y="429" fill="#9aa3c0" textLength="103.2" lengthAdjust="spacingAndGlyphs">21 Sep 15:13</text>
+<text x="744.4" y="429" fill="#9aa3c0" textLength="25.8" lengthAdjust="spacingAndGlyphs">Ada</text>
+<text x="839.0" y="429" fill="#6b7394" textLength="68.8" lengthAdjust="spacingAndGlyphs">a57e638b</text>
+<rect x="16" y="453" width="906" height="124" rx="10" fill="none" stroke="#0085d9" stroke-width="1.5"/>
+<text x="30.6" y="473" fill="#0085d9" textLength="344.0" lengthAdjust="spacingAndGlyphs" font-weight="700">22e1e26ea107735f9b8fe88ae1ceaa06bf71bbbe</text>
+<text x="391.8" y="473" fill="#6b7394" textLength="172.0" lengthAdjust="spacingAndGlyphs">Grace   21 Sep 23:13</text>
+<text x="30.6" y="495" fill="#d6dbeb" textLength="369.8" lengthAdjust="spacingAndGlyphs">Merge pull request #14 from fix/narrow-pane</text>
+<rect x="29.6" y="502" width="165.4" height="19" rx="4" fill="#3b5bdb"/>
+<text x="39.2" y="517" fill="#fff" textLength="146.2" lengthAdjust="spacingAndGlyphs">checkout 22e1e26e</text>
+<text x="30.6" y="539" fill="#f2c94c" textLength="77.4" lengthAdjust="spacingAndGlyphs">◆ new tag</text>
+<rect x="115.6" y="524" width="208.4" height="19" rx="4" fill="#1a1f33"/>
+<text x="125.2" y="539" fill="#d6dbeb" textLength="51.6" lengthAdjust="spacingAndGlyphs">v0.3.0</text>
+<text x="176.8" y="539" fill="#8ab4ff" textLength="8.6" lengthAdjust="spacingAndGlyphs">▏</text>
+<text x="340.2" y="539" fill="#6b7394" textLength="68.8" lengthAdjust="spacingAndGlyphs">⏎ create</text>
+<rect x="29.6" y="546" width="88.0" height="19" rx="4" fill="#3a3420"/>
+<text x="30.6" y="561" fill="#f2c94c" textLength="86.0" lengthAdjust="spacingAndGlyphs"> ◆ v0.2.0 </text>
+<text x="133.8" y="561" fill="#8ab4ff" textLength="51.6" lengthAdjust="spacingAndGlyphs">↑ push</text>
+<text x="211.2" y="561" fill="#ff8a8a" textLength="68.8" lengthAdjust="spacingAndGlyphs">✕ delete</text>
+<text x="305.8" y="561" fill="#ff8a8a" textLength="68.8" lengthAdjust="spacingAndGlyphs">✕ origin</text>
+<text x="400.4" y="561" fill="#6b7394" textLength="120.4" lengthAdjust="spacingAndGlyphs">rename ▏v0.2.1</text>
+</svg>

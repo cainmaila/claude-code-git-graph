@@ -1,0 +1,10 @@
+{
+  "name": "git-graph",
+  "version": "1.0.0",
+  "description": "A vscode-git-graph style commit graph pane for Claude Code: switch branches, checkout commits, create/rename/delete tags and push them",
+  "author": { "name": "cainmaila", "url": "https://github.com/cainmaila" },
+  "homepage": "https://github.com/cainmaila/claude-code-git-graph",
+  "repository": "https://github.com/cainmaila/claude-code-git-graph",
+  "keywords": ["git", "graph", "branch", "tag", "mod", "pane"],
+  "types": "./types/index.d.ts"
+}
