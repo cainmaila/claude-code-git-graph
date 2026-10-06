@@ -92,6 +92,10 @@ claude plugin validate ./claude-code-git-graph
 | `hooks/graph.ts` | `git log` parsing and the lane layout algorithm |
 | `types/index.d.ts` | Pane state contract |
 
+## License
+
+[MIT](LICENSE)
+
 ## Uninstall
 
 ```sh

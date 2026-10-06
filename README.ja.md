@@ -92,6 +92,10 @@ claude plugin validate ./claude-code-git-graph
 | `hooks/graph.ts` | `git log` の解析とレーンレイアウトのアルゴリズム |
 | `types/index.d.ts` | ペイン状態の型定義 |
 
+## ライセンス
+
+[MIT](LICENSE)
+
 ## アンインストール
 
 ```sh

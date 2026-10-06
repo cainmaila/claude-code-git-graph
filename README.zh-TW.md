@@ -92,6 +92,10 @@ claude plugin validate ./claude-code-git-graph
 | `hooks/graph.ts` | 解析 `git log` 與 lane 排版演算法 |
 | `types/index.d.ts` | 面板狀態的型別定義 |
 
+## 授權
+
+[MIT](LICENSE)
+
 ## 移除
 
 ```sh
