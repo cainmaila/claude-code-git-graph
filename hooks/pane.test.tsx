@@ -27,3 +27,26 @@ test('pane draws and expands a commit', async ($, on) => {
     await ui.unmount()
   }
 })
+
+test('desktop clips a long subject to one line; terminal keeps it whole', async ($, on) => {
+  const long = 'corrigido case de alguns includes que faziam com que os caminhos não fossem encontrados no linux'
+  on('process.run', async (_$, e) => {
+    const stdout = e.argv[1] === 'log' ? `aaaa\u001f\u001f\u001fAda\u001f1790003600\u001f${long}\n` : ''
+    return { value: { exitCode: 0, stdout, stderr: '', isStdoutTruncated: false, isStderrTruncated: false } }
+  })
+  on('ui.open', async () => ({ value: { isPlaced: true } as never }))
+  on('ui.toast', async () => ({ value: {} as never }))
+  await $.command.run({ command: 'git-graph', args: '' } as never)
+  const mount = (surface: 'terminal' | 'desktop') =>
+    $.ui.mount({ plugin: 'git-graph', surface, component: 'Pane', requestId: 'git-graph', props: {} as never, viewport: { columns: 100, rows: 40 } })
+
+  const desktop = await mount('desktop')
+  const clipped = await desktop.find({ type: 'Text', text: /^corrigido case.*…$/ })
+  expect(clipped?.text.length).toBeLessThan(long.length)
+  expect(await desktop.find({ type: 'Text', text: /no linux$/ })).toBeUndefined()
+  await desktop.unmount()
+
+  const terminal = await mount('terminal')
+  expect(await terminal.find({ type: 'Text', text: /^corrigido case.*no linux$/ })).toBeDefined()
+  await terminal.unmount()
+})

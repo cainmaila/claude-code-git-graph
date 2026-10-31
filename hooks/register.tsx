@@ -111,7 +111,7 @@ export const register: Register = on => {
     const armedKey = await read($, armed)
     const Select = 'Select' in el ? el.Select : undefined
     // 有 Svg 的 surface（desktop / vscode / mobile）畫向量線；terminal 用框線字元
-    const Svg = 'Svg' in el ? el.Svg : undefined
+    const Svg = e.surface !== 'terminal' && 'Svg' in el ? el.Svg : undefined
     const rows = layout(list)
     const width = e.viewport?.columns ?? 120
     const wide = width >= 90
@@ -125,6 +125,26 @@ export const register: Register = on => {
     const svgW = svgWidth(1 + Math.max(0, ...rows.flatMap(r => [r.col, ...r.segments.flatMap(s => [s.x1, s.x2])])))
     // 未提交變更列與 HEAD 相鄰時，虛線一路接到 HEAD 節點
     const wipLinked = changes > 0 && head === 0
+
+    // desktop 不理會巢狀 Text 的 truncate-end：長描述會折成兩行、列高超過 SVG，線就斷了。
+    // 依 viewport 寬度（等寬字格）自己裁；寬字元與 emoji 算兩格
+    const descCells = width - (wide ? 13 + 12 + 2 : 0) - 8 - 1 - Math.ceil(svgW / 8) - 1
+    const cellsOf = (s: string) => [...s].reduce((n, ch) => n + (ch.codePointAt(0)! >= 0x1100 ? 2 : 1), 0)
+    const fit = (s: string, room: number) => {
+      if (cellsOf(s) <= room) return s
+      let out = ''
+      for (const ch of s) {
+        if (cellsOf(out + ch) > room - 1) break
+        out += ch
+      }
+      return out + '…'
+    }
+    const pillCells = (r: Ref) =>
+      r.kind === 'tag' ? cellsOf(clip(r.name)) + 5
+        : r.kind === 'detached' ? 9
+          : r.kind === 'remote' ? cellsOf(r.name) + 5
+            : cellsOf(clip(r.name)) + (r.isHead ? 5 : 3) + (r.remotes.length ? cellsOf(r.remotes.join(' ')) + 2 : 0)
+    const subject = (c: Commit) => (Svg ? fit(c.subject, Math.max(8, descCells - c.refs.reduce((n, r) => n + pillCells(r), 0))) : c.subject)
 
     const cell = (cells: Cell[], strokes: Stroke[], node: Node) =>
       Svg
@@ -188,7 +208,7 @@ export const register: Register = on => {
           <Box flexGrow={1} flexShrink={1} overflow="hidden">
             <Text wrap="truncate-end">
               {c.refs.map(r => pill(r, color))}
-              <Text dimColor={isMerge && !isSel} bold={isSel}>{c.subject}</Text>
+              <Text dimColor={isMerge && !isSel} bold={isSel}>{subject(c)}</Text>
             </Text>
           </Box>
           {columns(fmtDate(c.time), c.author, isMerge)}
