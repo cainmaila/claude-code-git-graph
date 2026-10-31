@@ -1,4 +1,4 @@
-import type { Cell, Commit, GraphRow, Ref } from '../types'
+import type { Cell, Commit, GraphRow, Ref, Segment } from '../types'
 
 // vscode-git-graph 預設色盤，依 lane index 輪替
 export const LANE_COLORS = ['#0085d9', '#d9008f', '#00d90a', '#d98500', '#a300d9', '#ff0000', '#00d9cc', '#e138e8']
@@ -42,6 +42,7 @@ const H_CROSS: Record<string, string> = { '│': '┼', ' ': '─' }
 export function layout(commits: Commit[]): GraphRow[] {
   const lanes: (string | null)[] = []
   return commits.map(c => {
+    const above = [...lanes]
     let col = lanes.indexOf(c.hash)
     if (col < 0) {
       col = lanes.indexOf(null)
@@ -70,8 +71,15 @@ export function layout(commits: Commit[]): GraphRow[] {
       put(j * 2, j > col ? '╯' : '╰', j)
     })
 
+    const segments: Segment[] = []
+    above.forEach((h, j) => {
+      if (h === c.hash) segments.push({ x1: j, y1: 'top', x2: col, y2: 'mid', lane: j })
+      else if (h) segments.push({ x1: j, y1: 'top', x2: j, y2: 'bottom', lane: j })
+    })
+
     const [first, ...others] = c.parents
     lanes[col] = first ?? null
+    if (first) segments.push({ x1: col, y1: 'mid', x2: col, y2: 'bottom', lane: col })
     for (const p of others) {
       let k = lanes.indexOf(p)
       const existed = k >= 0 && k !== col
@@ -84,9 +92,43 @@ export function layout(commits: Commit[]): GraphRow[] {
       // 同列剛匯入的 lane 又被分出去：╯+╮ → ┤
       const joined = existed || cells[k * 2]?.ch === '╯' || cells[k * 2]?.ch === '╰'
       put(k * 2, joined ? (k > col ? '┤' : '├') : (k > col ? '╮' : '╭'), k)
+      segments.push({ x1: col, y1: 'mid', x2: k, y2: 'bottom', lane: k })
     }
     while (lanes.length && lanes[lanes.length - 1] === null) lanes.pop()
 
-    return { col, cells }
+    return { col, cells, segments }
   })
+}
+
+// 桌面版每列一張 SVG：線段頂到列的上下緣，相鄰列才接得起來
+export const ROW_H = 24
+const LANE_W = 16
+const R = 4
+export const svgWidth = (lanes: number) => Math.max(56, lanes * LANE_W)
+
+const laneX = (lane: number) => LANE_W / 2 + lane * LANE_W
+const Y = { top: 0, mid: ROW_H / 2, bottom: ROW_H } as const
+
+// 未提交變更：灰色虛線接到 HEAD
+export const WIP_COLOR = '#808080'
+export type Stroke = Segment & { dashed?: boolean }
+export type Node = { col: number; color: string; hollow?: boolean }
+
+export function rowSvg(strokes: Stroke[], node: Node, width: number): string {
+  const cx = laneX(node.col)
+  const paths = strokes.map(s => {
+    const [x1, y1, x2, y2] = [laneX(s.x1), Y[s.y1], laneX(s.x2), Y[s.y2]]
+    const ym = (y1 + y2) / 2
+    const d = x1 === x2 ? `M${x1} ${y1}V${y2}` : `M${x1} ${y1}C${x1} ${ym} ${x2} ${ym} ${x2} ${y2}`
+    return s.dashed
+      ? `<path d="${d}" stroke="${WIP_COLOR}" stroke-dasharray="3 3"/>`
+      : `<path d="${d}" stroke="${laneColor(s.lane)}"/>`
+  })
+  // 空心節點：mask 挖掉穿進圓心的線
+  const mask = node.hollow ? `<mask id="m"><rect width="${width}" height="${ROW_H}" fill="#fff"/><circle cx="${cx}" cy="${Y.mid}" r="${R}" fill="#000"/></mask>` : ''
+  const circle = node.hollow
+    ? `<circle cx="${cx}" cy="${Y.mid}" r="${R}" fill="none" stroke="${node.color}" stroke-width="2"/>`
+    : `<circle cx="${cx}" cy="${Y.mid}" r="${R}" fill="${node.color}"/>`
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${ROW_H}" viewBox="0 0 ${width} ${ROW_H}">${mask}`
+    + `<g fill="none" stroke-width="2"${mask ? ' mask="url(#m)"' : ''}>${paths.join('')}</g>${circle}</svg>`
 }

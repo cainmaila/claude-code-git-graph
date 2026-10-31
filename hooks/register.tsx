@@ -2,7 +2,8 @@ import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
 import type { Cell, Commit, Ref } from '../types'
-import { layout, laneColor, parseLog } from './graph'
+import { layout, laneColor, parseLog, ROW_H, rowSvg, svgWidth, WIP_COLOR } from './graph'
+import type { Node, Stroke } from './graph'
 
 const PANE = 'git-graph'
 const commits = atom({ plugin: 'git-graph', key: 'commits' } as const, [])
@@ -109,6 +110,8 @@ export const register: Register = on => {
     const target = await read($, remote)
     const armedKey = await read($, armed)
     const Select = 'Select' in el ? el.Select : undefined
+    // 有 Svg 的 surface（desktop / vscode / mobile）畫向量線；terminal 用框線字元
+    const Svg = 'Svg' in el ? el.Svg : undefined
     const rows = layout(list)
     const width = e.viewport?.columns ?? 120
     const wide = width >= 90
@@ -119,6 +122,14 @@ export const register: Register = on => {
     const head = list.findIndex(c => c.refs.some(r => (r.kind === 'branch' && r.isHead) || r.kind === 'detached'))
     const headCol = rows[head]?.col ?? 0
     const headName = list[head]?.refs.flatMap(r => (r.kind === 'branch' && r.isHead ? [r.name] : []))[0]
+    const svgW = svgWidth(1 + Math.max(0, ...rows.flatMap(r => [r.col, ...r.segments.flatMap(s => [s.x1, s.x2])])))
+    // 未提交變更列與 HEAD 相鄰時，虛線一路接到 HEAD 節點
+    const wipLinked = changes > 0 && head === 0
+
+    const cell = (cells: Cell[], strokes: Stroke[], node: Node) =>
+      Svg
+        ? <Box flexShrink={0}><Svg source={rowSvg(strokes, node, svgW)} alt="" width={svgW} height={ROW_H} /></Box>
+        : <Box width={graphW} flexShrink={0} overflow="hidden"><Text mono>{graph(cells)}</Text></Box>
 
     const room = Math.max(3, (e.viewport?.rows ?? 30) - 6 - (changes ? 1 : 0) - (picked ? 7 + picked.refs.filter(r => r.kind === 'tag').length : 0))
     const start = Math.max(0, Math.min(selIdx - Math.floor(room / 2), list.length - room))
@@ -168,10 +179,12 @@ export const register: Register = on => {
     const row = (c: Commit, i: number) => {
       const isSel = c.hash === sel
       const isMerge = c.parents.length > 1
-      const color = laneColor(rows[i]!.col)
+      const { col, cells, segments } = rows[i]!
+      const color = laneColor(col)
+      const strokes: Stroke[] = i === 0 && wipLinked ? [{ x1: col, y1: 'top', x2: col, y2: 'mid', lane: col, dashed: true }, ...segments] : segments
       return (
-        <Box key={`row:${c.hash}`} columnGap={1} backgroundColor={isSel ? SELECTED : undefined} hover={{ backgroundColor: HOVER }}>
-          <Box width={graphW} flexShrink={0} overflow="hidden"><Text mono>{graph(rows[i]!.cells)}</Text></Box>
+        <Box key={`row:${c.hash}`} columnGap={1} alignItems="center" backgroundColor={isSel ? SELECTED : undefined} hover={{ backgroundColor: HOVER }}>
+          {cell(cells, strokes, { col, color, hollow: i === head })}
           <Box flexGrow={1} flexShrink={1} overflow="hidden">
             <Text wrap="truncate-end">
               {c.refs.map(r => pill(r, color))}
@@ -328,7 +341,9 @@ export const register: Register = on => {
           )}
         </Box>
         <Box columnGap={1}>
-          <Box width={graphW} flexShrink={0}><Text bold dimColor>Graph</Text></Box>
+          {Svg
+            ? <Box flexDirection="column" flexShrink={0}><Text bold dimColor>Graph</Text><Svg source={`<svg xmlns="http://www.w3.org/2000/svg" width="${svgW}" height="1"/>`} alt="" width={svgW} height={1} /></Box>
+            : <Box width={graphW} flexShrink={0}><Text bold dimColor>Graph</Text></Box>}
           <Box flexGrow={1}><Text bold dimColor>Description</Text></Box>
           {wide && <Box width={13} flexShrink={0}><Text bold dimColor>Date</Text></Box>}
           {wide && <Box width={12} flexShrink={0}><Text bold dimColor>Author</Text></Box>}
@@ -336,10 +351,10 @@ export const register: Register = on => {
         </Box>
         <Box height={1} overflow="hidden"><Text dimColor wrap="wrap">{'─'.repeat(width)}</Text></Box>
         {changes > 0 && start === 0 && (
-          <Box key="row:wip" columnGap={1} hover={{ backgroundColor: HOVER }}>
-            <Box width={graphW} flexShrink={0}>
-              <Text mono>{' '.repeat(headCol * 2)}<Text color={laneColor(headCol)}>◌</Text></Text>
-            </Box>
+          <Box key="row:wip" columnGap={1} alignItems="center" hover={{ backgroundColor: HOVER }}>
+            {Svg
+              ? cell([], wipLinked ? [{ x1: headCol, y1: 'mid', x2: headCol, y2: 'bottom', lane: headCol, dashed: true }] : [], { col: headCol, color: WIP_COLOR, hollow: true })
+              : <Box width={graphW} flexShrink={0}><Text mono>{' '.repeat(headCol * 2)}<Text color={laneColor(headCol)}>◌</Text></Text></Box>}
             <Box flexGrow={1} flexShrink={1}><Text bold wrap="truncate-end">Uncommitted Changes ({changes})</Text></Box>
             {columns(fmtDate(Date.now() / 1000), '*', false)}
             <Box width={8} flexShrink={0}><Text dimColor>*</Text></Box>
