@@ -128,7 +128,7 @@ export const register: Register = on => {
 
     const cell = (cells: Cell[], strokes: Stroke[], node: Node) =>
       Svg
-        ? <Box flexShrink={0}><Svg source={rowSvg(strokes, node, svgW)} alt="" width={svgW} height={ROW_H} /></Box>
+        ? <Box flexShrink={0}><Svg source={rowSvg(strokes, node, svgW)} alt="graph" width={svgW} height={ROW_H} /></Box>
         : <Box width={graphW} flexShrink={0} overflow="hidden"><Text mono>{graph(cells)}</Text></Box>
 
     const room = Math.max(3, (e.viewport?.rows ?? 30) - 6 - (changes ? 1 : 0) - (picked ? 7 + picked.refs.filter(r => r.kind === 'tag').length : 0))

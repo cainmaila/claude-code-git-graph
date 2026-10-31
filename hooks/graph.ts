@@ -114,21 +114,28 @@ export const WIP_COLOR = '#808080'
 export type Stroke = Segment & { dashed?: boolean }
 export type Node = { col: number; color: string; hollow?: boolean }
 
+// SVG 內不放 '#'：desktop 以 data URL 畫 SVG 時 '#' 會截斷文件
+const rgb = (hex: string) => `rgb(${[1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16)).join(',')})`
+
 export function rowSvg(strokes: Stroke[], node: Node, width: number): string {
   const cx = laneX(node.col)
+  // 空心節點：接到圓心的線停在圓周上，不用 mask（mask 要 url(#id)）
+  const gap = (y: number) => (node.hollow && y === Y.mid ? R : 0)
   const paths = strokes.map(s => {
-    const [x1, y1, x2, y2] = [laneX(s.x1), Y[s.y1], laneX(s.x2), Y[s.y2]]
+    const [x1, x2] = [laneX(s.x1), laneX(s.x2)]
+    const atNode1 = x1 === cx ? gap(Y[s.y1]) : 0
+    const atNode2 = x2 === cx ? gap(Y[s.y2]) : 0
+    const [y1, y2] = [Y[s.y1] + atNode1, Y[s.y2] - atNode2]
     const ym = (y1 + y2) / 2
     const d = x1 === x2 ? `M${x1} ${y1}V${y2}` : `M${x1} ${y1}C${x1} ${ym} ${x2} ${ym} ${x2} ${y2}`
     return s.dashed
-      ? `<path d="${d}" stroke="${WIP_COLOR}" stroke-dasharray="3 3"/>`
-      : `<path d="${d}" stroke="${laneColor(s.lane)}"/>`
+      ? `<path d="${d}" stroke="${rgb(WIP_COLOR)}" stroke-dasharray="3 3"/>`
+      : `<path d="${d}" stroke="${rgb(laneColor(s.lane))}"/>`
   })
-  // 空心節點：mask 挖掉穿進圓心的線
-  const mask = node.hollow ? `<mask id="m"><rect width="${width}" height="${ROW_H}" fill="#fff"/><circle cx="${cx}" cy="${Y.mid}" r="${R}" fill="#000"/></mask>` : ''
+  const color = rgb(node.color)
   const circle = node.hollow
-    ? `<circle cx="${cx}" cy="${Y.mid}" r="${R}" fill="none" stroke="${node.color}" stroke-width="2"/>`
-    : `<circle cx="${cx}" cy="${Y.mid}" r="${R}" fill="${node.color}"/>`
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${ROW_H}" viewBox="0 0 ${width} ${ROW_H}">${mask}`
-    + `<g fill="none" stroke-width="2"${mask ? ' mask="url(#m)"' : ''}>${paths.join('')}</g>${circle}</svg>`
+    ? `<circle cx="${cx}" cy="${Y.mid}" r="${R}" fill="none" stroke="${color}" stroke-width="2"/>`
+    : `<circle cx="${cx}" cy="${Y.mid}" r="${R}" fill="${color}"/>`
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${ROW_H}" viewBox="0 0 ${width} ${ROW_H}">`
+    + `<g fill="none" stroke-width="2">${paths.join('')}</g>${circle}</svg>`
 }

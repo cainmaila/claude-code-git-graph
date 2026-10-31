@@ -43,10 +43,18 @@ test('segments meet at row edges so adjacent rows connect', () => {
 test('rowSvg curves lane changes and hollows the head node', () => {
   const [merge] = layout([c('m', ['b', 'x']), c('x', ['a']), c('b', ['a']), c('a', [])])
   const svg = rowSvg(merge!.segments, { col: 0, color: '#0085d9', hollow: true }, 56)
+  // 線從空心圓的圓周出發（12 + 半徑 4）
+  expect(svg).toContain('<path d="M8 16V24"')
+  expect(svg).toContain('<path d="M8 16C8 20 24 20 24 24"')
+  expect(svg).toContain('fill="none" stroke="rgb(0,133,217)"')
+  expect(svg).not.toContain('#')
+})
+
+test('rowSvg draws plain nodes with lines through the center', () => {
+  const [merge] = layout([c('m', ['b', 'x']), c('x', ['a']), c('b', ['a']), c('a', [])])
+  const svg = rowSvg(merge!.segments, { col: 0, color: '#0085d9' }, 56)
   expect(svg).toContain('<path d="M8 12V24"')
-  expect(svg).toContain('<path d="M8 12C8 18 24 18 24 24"')
-  expect(svg).toContain('mask="url(#m)"')
-  expect(svg).toContain('fill="none" stroke="#0085d9"')
+  expect(svg).toContain('<circle cx="8" cy="12" r="4" fill="rgb(0,133,217)"/>')
 })
 
 test('refs: head, merged remote, lone remote, tag', () => {
