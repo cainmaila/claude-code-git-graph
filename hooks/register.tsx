@@ -133,7 +133,7 @@ export const register: Register = on => {
         if (last && last.lane === c.lane) last.text += c.ch
         else spans.push({ text: c.ch, lane: c.lane })
       }
-      return spans.map(s => <Text color={s.lane < 0 ? undefined : laneColor(s.lane)}>{s.text}</Text>)
+      return spans.map(s => <Text mono color={s.lane < 0 ? undefined : laneColor(s.lane)}>{s.text}</Text>)
     }
 
     // 窄面板時壓短 ref 名，避免吃光描述
@@ -171,7 +171,7 @@ export const register: Register = on => {
       const color = laneColor(rows[i]!.col)
       return (
         <Box key={`row:${c.hash}`} columnGap={1} backgroundColor={isSel ? SELECTED : undefined} hover={{ backgroundColor: HOVER }}>
-          <Box width={graphW} flexShrink={0} overflow="hidden"><Text>{graph(rows[i]!.cells)}</Text></Box>
+          <Box width={graphW} flexShrink={0} overflow="hidden"><Text mono>{graph(rows[i]!.cells)}</Text></Box>
           <Box flexGrow={1} flexShrink={1} overflow="hidden">
             <Text wrap="truncate-end">
               {c.refs.map(r => pill(r, color))}
@@ -192,7 +192,7 @@ export const register: Register = on => {
     const confirm = (key: string, run: () => Promise<void>) => async () => {
       if (armedKey !== key) {
         await update($, armed, () => key)
-        return void $.ui.toast('再按一次確認')
+        return void $.ui.toast('Press again to confirm')
       }
       await update($, armed, () => '')
       await run()
@@ -252,7 +252,7 @@ export const register: Register = on => {
                 </Button>
               )}
               <Button key={`td:${tag}`} plain onPress={() => void confirm(`td:${tag}`, () => act($, `deleted tag ${tag}`, ['tag', '-d', tag]))()}>
-                {armedKey === `td:${tag}` ? '✕ 確認刪除?' : '✕ delete'}
+                {armedKey === `td:${tag}` ? '✕ confirm delete?' : '✕ delete'}
               </Button>
               {target && (
                 <Button
@@ -260,7 +260,7 @@ export const register: Register = on => {
                   plain
                   onPress={() => void confirm(`tr:${tag}`, () => act($, `deleted tag ${tag} on ${target}`, ['push', target, '--delete', `refs/tags/${tag}`]))()}
                 >
-                  {armedKey === `tr:${tag}` ? `✕ 確認刪除 ${target}?` : `✕ ${target}`}
+                  {armedKey === `tr:${tag}` ? `✕ confirm delete on ${target}?` : `✕ ${target}`}
                 </Button>
               )}
               {Input && (
@@ -280,7 +280,7 @@ export const register: Register = on => {
                       ? await git($, ['tag', '-a', next, c.hash, '-m', msg.stdout.trim() || next])
                       : await git($, ['tag', next, c.hash])
                     if (made.exitCode !== 0) return void $.ui.toast(made.stderr.trim() || 'rename failed')
-                    await act($, `renamed ${tag} → ${next}（遠端需另外 push / 刪除）`, ['tag', '-d', tag])
+                    await act($, `renamed ${tag} → ${next} (push/delete on the remote separately)`, ['tag', '-d', tag])
                   }}
                 />
               )}
@@ -304,7 +304,7 @@ export const register: Register = on => {
             <Button key="down" plain hotkey="j" onPress={() => void move(1)}>↓</Button>
             <Button key="refresh" plain hotkey="r" onPress={() => void refresh($)}>⟳</Button>
             {picked && <Button key="close" plain hotkey="x" onPress={() => void update($, selected, () => '')}>✕</Button>}
-            <Button key="quit" plain hotkey="q" onPress={() => void $.ui.close({ id: PANE })}>關閉</Button>
+            <Button key="quit" plain hotkey="q" onPress={() => void $.ui.close({ id: PANE })}>Close</Button>
           </Box>
         </Box>
         <Box columnGap={2} flexWrap="wrap">
@@ -338,7 +338,7 @@ export const register: Register = on => {
         {changes > 0 && start === 0 && (
           <Box key="row:wip" columnGap={1} hover={{ backgroundColor: HOVER }}>
             <Box width={graphW} flexShrink={0}>
-              <Text>{' '.repeat(headCol * 2)}<Text color={laneColor(headCol)}>◌</Text></Text>
+              <Text mono>{' '.repeat(headCol * 2)}<Text color={laneColor(headCol)}>◌</Text></Text>
             </Box>
             <Box flexGrow={1} flexShrink={1}><Text bold wrap="truncate-end">Uncommitted Changes ({changes})</Text></Box>
             {columns(fmtDate(Date.now() / 1000), '*', false)}
