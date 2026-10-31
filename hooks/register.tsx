@@ -241,7 +241,7 @@ export const register: Register = on => {
       const short = c.hash.slice(0, 8)
       const color = laneColor(rows[selIdx]!.col)
       return (
-        <Box flexDirection="column" borderStyle="round" borderColor={color} paddingX={1}>
+        <Box key="details" flexDirection="column" borderStyle="round" borderColor={color} paddingX={1}>
           <Box gap={2}>
             <Text color={color} bold>{c.hash}</Text>
             <Text dimColor>{c.author}</Text>
@@ -380,8 +380,8 @@ export const register: Register = on => {
             <Box width={8} flexShrink={0}><Text dimColor>*</Text></Box>
           </Box>
         )}
-        {list.slice(start, start + room).map((c, i) => row(c, start + i))}
-        {picked && actions(picked)}
+        {/* 詳細面板接在選取的 commit 下方（vscode-git-graph 的位置），不必捲到底 */}
+        {list.slice(start, start + room).flatMap((c, i) => (c.hash === sel ? [row(c, start + i), actions(c)] : [row(c, start + i)]))}
       </Box>
     )
   })
