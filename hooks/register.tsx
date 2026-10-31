@@ -196,6 +196,8 @@ export const register: Register = on => {
       wide && <Box width={12} flexShrink={0}><Text dimColor={dim} wrap="truncate-end">{author}</Text></Box>,
     ]
 
+    const toggle = (hash: string) => () => void update($, selected, s => (s === hash ? '' : hash))
+
     const row = (c: Commit, i: number) => {
       const isSel = c.hash === sel
       const isMerge = c.parents.length > 1
@@ -206,14 +208,17 @@ export const register: Register = on => {
         <Box key={`row:${c.hash}`} columnGap={1} alignItems="center" backgroundColor={isSel ? SELECTED : undefined} hover={{ backgroundColor: HOVER }}>
           {cell(cells, strokes, { col, color, hollow: i === head })}
           <Box flexGrow={1} flexShrink={1} overflow="hidden">
-            <Text wrap="truncate-end">
-              {c.refs.map(r => pill(r, color))}
-              <Text dimColor={isMerge && !isSel} bold={isSel}>{subject(c)}</Text>
-            </Text>
+            {/* 點描述就選取（Box 不能按，只有 Button 能；Button 只收 Text） */}
+            <Button key={`d:${c.hash}`} label={c.subject} plain onPress={toggle(c.hash)}>
+              <Text wrap="truncate-end">
+                {c.refs.map(r => pill(r, color))}
+                <Text dimColor={isMerge && !isSel} bold={isSel}>{subject(c)}</Text>
+              </Text>
+            </Button>
           </Box>
           {columns(fmtDate(c.time), c.author, isMerge)}
           <Box width={8} flexShrink={0}>
-            <Button key={`c:${c.hash}`} plain dimColor={!isSel} onPress={() => void update($, selected, s => (s === c.hash ? '' : c.hash))}>
+            <Button key={`c:${c.hash}`} plain dimColor={!isSel} onPress={toggle(c.hash)}>
               {c.hash.slice(0, 8)}
             </Button>
           </Box>

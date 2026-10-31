@@ -28,6 +28,23 @@ test('pane draws and expands a commit', async ($, on) => {
   }
 })
 
+test('clicking a row description opens and closes its details', async ($, on) => {
+  on('process.run', async (_$, e) => {
+    const stdout = e.argv[1] === 'log' ? 'aaaa\u001f\u001f\u001fAda\u001f1790003600\u001ffirst commit\n' : ''
+    return { value: { exitCode: 0, stdout, stderr: '', isStdoutTruncated: false, isStderrTruncated: false } }
+  })
+  on('ui.open', async () => ({ value: { isPlaced: true } as never }))
+  on('ui.toast', async () => ({ value: {} as never }))
+  await $.command.run({ command: 'git-graph', args: '' } as never)
+  const ui = await $.ui.mount({ plugin: 'git-graph', surface: 'desktop', component: 'Pane', requestId: 'git-graph', props: {} as never, viewport: { columns: 100, rows: 40 } })
+  expect(await ui.find({ key: 'details' })).toBeUndefined()
+  await ui.press({ key: 'd:aaaa' })
+  expect(await ui.find({ key: 'details' })).toBeDefined()
+  await ui.press({ key: 'd:aaaa' })
+  expect(await ui.find({ key: 'details' })).toBeUndefined()
+  await ui.unmount()
+})
+
 test('desktop clips a long subject to one line; terminal keeps it whole', async ($, on) => {
   const long = 'corrigido case de alguns includes que faziam com que os caminhos não fossem encontrados no linux'
   on('process.run', async (_$, e) => {
