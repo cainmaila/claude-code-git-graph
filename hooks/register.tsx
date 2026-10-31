@@ -139,11 +139,10 @@ export const register: Register = on => {
       }
       return out + '…'
     }
+    // badge 寬：圖示 3 格、名稱前後空白 2 格、框線 2 格、與下一個的間距 1 格
     const pillCells = (r: Ref) =>
-      r.kind === 'tag' ? cellsOf(clip(r.name)) + 5
-        : r.kind === 'detached' ? 9
-          : r.kind === 'remote' ? cellsOf(r.name) + 5
-            : cellsOf(clip(r.name)) + (r.isHead ? 5 : 3) + (r.remotes.length ? cellsOf(r.remotes.join(' ')) + 2 : 0)
+      r.kind === 'detached' ? 12
+        : cellsOf(clip(r.name)) + 8 + (r.kind === 'branch' && r.remotes.length ? cellsOf(r.remotes.join(' ')) + 2 : 0)
     const subject = (c: Commit) => (Svg ? fit(c.subject, Math.max(8, descCells - c.refs.reduce((n, r) => n + pillCells(r), 0))) : c.subject)
 
     const cell = (cells: Cell[], strokes: Stroke[], node: Node) =>
@@ -191,6 +190,22 @@ export const register: Register = on => {
       )
     }
 
+    // 桌面版的 ref：外框 badge，左邊一格 lane 色圖示（vscode-git-graph 的樣子）。
+    // terminal 的 Box 框線要佔三列，所以只在 SVG surface 用
+    const badge = (ref: Ref, color: string) => {
+      const [icon, tint, name] =
+        ref.kind === 'tag' ? ['◆', '#f2c94c', clip(ref.name)]
+          : ref.kind === 'detached' ? ['◉', color, 'HEAD']
+            : ['⎇', color, clip(ref.name)]
+      return (
+        <Box key={`ref:${ref.kind}:${'name' in ref ? ref.name : ''}`} borderStyle="round" borderColor={tint} flexShrink={0}>
+          <Text backgroundColor={tint} color="#000" bold> {icon} </Text>
+          <Text bold={ref.kind === 'branch' && ref.isHead}> {name} </Text>
+          {ref.kind === 'branch' && ref.remotes.length > 0 && <Text color={tint} italic>│ {ref.remotes.join(' ')} </Text>}
+        </Box>
+      )
+    }
+
     const columns = (date: string, author: string, dim: boolean) => [
       wide && <Box width={13} flexShrink={0}><Text dimColor={dim}>{date}</Text></Box>,
       wide && <Box width={12} flexShrink={0}><Text dimColor={dim} wrap="truncate-end">{author}</Text></Box>,
@@ -207,11 +222,12 @@ export const register: Register = on => {
       return (
         <Box key={`row:${c.hash}`} columnGap={1} alignItems="center" backgroundColor={isSel ? SELECTED : undefined} hover={{ backgroundColor: HOVER }}>
           {cell(cells, strokes, { col, color, hollow: i === head })}
-          <Box flexGrow={1} flexShrink={1} overflow="hidden">
+          <Box flexGrow={1} flexShrink={1} overflow="hidden" columnGap={1} alignItems="center">
+            {Svg && c.refs.map(r => badge(r, color))}
             {/* 點描述就選取（Box 不能按，只有 Button 能；Button 只收 Text） */}
             <Button key={`d:${c.hash}`} label={c.subject} plain onPress={toggle(c.hash)}>
               <Text wrap="truncate-end">
-                {c.refs.map(r => pill(r, color))}
+                {!Svg && c.refs.map(r => pill(r, color))}
                 <Text dimColor={isMerge && !isSel} bold={isSel}>{subject(c)}</Text>
               </Text>
             </Button>

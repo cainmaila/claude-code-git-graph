@@ -28,6 +28,32 @@ test('pane draws and expands a commit', async ($, on) => {
   }
 })
 
+test('desktop draws refs as outlined badges; terminal keeps inline pills', async ($, on) => {
+  on('process.run', async (_$, e) => {
+    const a = e.argv.slice(1)
+    const stdout = a[0] === 'log' ? 'aaaa\u001f\u001fHEAD -> main, origin/main, origin/pr-assets, tag: v1\u001fAda\u001f1790003600\u001ffirst commit\n'
+      : a[0] === 'remote' ? 'origin\n' : ''
+    return { value: { exitCode: 0, stdout, stderr: '', isStdoutTruncated: false, isStderrTruncated: false } }
+  })
+  on('ui.open', async () => ({ value: { isPlaced: true } as never }))
+  on('ui.toast', async () => ({ value: {} as never }))
+  await $.command.run({ command: 'git-graph', args: '' } as never)
+  const mount = (surface: 'terminal' | 'desktop') =>
+    $.ui.mount({ plugin: 'git-graph', surface, component: 'Pane', requestId: 'git-graph', props: {} as never, viewport: { columns: 100, rows: 40 } })
+
+  const desktop = await mount('desktop')
+  for (const key of ['ref:branch:main', 'ref:remote:origin/pr-assets', 'ref:tag:v1']) expect(await desktop.find({ key })).toBeDefined()
+  expect(await desktop.find({ type: 'Text', text: /│ origin/ })).toBeDefined()
+  await desktop.press({ key: 'd:aaaa' })
+  expect(await desktop.find({ key: 'details' })).toBeDefined()
+  await desktop.unmount()
+
+  const terminal = await mount('terminal')
+  expect(await terminal.find({ key: 'ref:branch:main' })).toBeUndefined()
+  expect(await terminal.find({ type: 'Text', text: /◉ main/ })).toBeDefined()
+  await terminal.unmount()
+})
+
 test('clicking a row description opens and closes its details', async ($, on) => {
   on('process.run', async (_$, e) => {
     const stdout = e.argv[1] === 'log' ? 'aaaa\u001f\u001f\u001fAda\u001f1790003600\u001ffirst commit\n' : ''
