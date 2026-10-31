@@ -2,7 +2,8 @@ import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
 import type { Cell, Commit, Ref } from '../types'
-import { layout, laneColor, parseLog } from './graph'
+import { layout, laneColor, parseLog, ROW_H, rowSvg, svgWidth, WIP_COLOR } from './graph'
+import type { Node, Stroke } from './graph'
 
 const PANE = 'git-graph'
 const commits = atom({ plugin: 'git-graph', key: 'commits' } as const, [])
@@ -109,6 +110,8 @@ export const register: Register = on => {
     const target = await read($, remote)
     const armedKey = await read($, armed)
     const Select = 'Select' in el ? el.Select : undefined
+    // 有 Svg 的 surface（desktop / vscode / mobile）畫向量線；terminal 用框線字元
+    const Svg = e.surface !== 'terminal' && 'Svg' in el ? el.Svg : undefined
     const rows = layout(list)
     const width = e.viewport?.columns ?? 120
     const wide = width >= 90
@@ -119,6 +122,33 @@ export const register: Register = on => {
     const head = list.findIndex(c => c.refs.some(r => (r.kind === 'branch' && r.isHead) || r.kind === 'detached'))
     const headCol = rows[head]?.col ?? 0
     const headName = list[head]?.refs.flatMap(r => (r.kind === 'branch' && r.isHead ? [r.name] : []))[0]
+    const svgW = svgWidth(1 + Math.max(0, ...rows.flatMap(r => [r.col, ...r.segments.flatMap(s => [s.x1, s.x2])])))
+    // 未提交變更列與 HEAD 相鄰時，虛線一路接到 HEAD 節點
+    const wipLinked = changes > 0 && head === 0
+
+    // desktop 不理會巢狀 Text 的 truncate-end：長描述會折成兩行、列高超過 SVG，線就斷了。
+    // 依 viewport 寬度（等寬字格）自己裁；寬字元與 emoji 算兩格
+    const descCells = width - (wide ? 13 + 12 + 2 : 0) - 8 - 1 - Math.ceil(svgW / 8) - 1
+    const cellsOf = (s: string) => [...s].reduce((n, ch) => n + (ch.codePointAt(0)! >= 0x1100 ? 2 : 1), 0)
+    const fit = (s: string, room: number) => {
+      if (cellsOf(s) <= room) return s
+      let out = ''
+      for (const ch of s) {
+        if (cellsOf(out + ch) > room - 1) break
+        out += ch
+      }
+      return out + '…'
+    }
+    // badge 寬：圖示 3 格、名稱前後空白 2 格、與下一個的間距 1 格
+    const pillCells = (r: Ref) =>
+      r.kind === 'detached' ? 10
+        : cellsOf(clip(r.name)) + 6 + (r.kind === 'branch' && r.remotes.length ? cellsOf(r.remotes.join(' ')) + 2 : 0)
+    const subject = (c: Commit) => (Svg ? fit(c.subject, Math.max(8, descCells - c.refs.reduce((n, r) => n + pillCells(r), 0))) : c.subject)
+
+    const cell = (cells: Cell[], strokes: Stroke[], node: Node) =>
+      Svg
+        ? <Box flexShrink={0}><Svg source={rowSvg(strokes, node, svgW)} alt="graph" width={svgW} height={ROW_H} /></Box>
+        : <Box width={graphW} flexShrink={0} overflow="hidden"><Text mono>{graph(cells)}</Text></Box>
 
     const room = Math.max(3, (e.viewport?.rows ?? 30) - 6 - (changes ? 1 : 0) - (picked ? 7 + picked.refs.filter(r => r.kind === 'tag').length : 0))
     const start = Math.max(0, Math.min(selIdx - Math.floor(room / 2), list.length - room))
@@ -133,7 +163,7 @@ export const register: Register = on => {
         if (last && last.lane === c.lane) last.text += c.ch
         else spans.push({ text: c.ch, lane: c.lane })
       }
-      return spans.map(s => <Text color={s.lane < 0 ? undefined : laneColor(s.lane)}>{s.text}</Text>)
+      return spans.map(s => <Text mono color={s.lane < 0 ? undefined : laneColor(s.lane)}>{s.text}</Text>)
     }
 
     // 窄面板時壓短 ref 名，避免吃光描述
@@ -160,27 +190,51 @@ export const register: Register = on => {
       )
     }
 
+    // 桌面版的 ref：左邊一格 lane 色圖示、名稱用 lane 色（vscode-git-graph 的樣子）。
+    // 不加框線：桌面版框線會把列撐高到超過 ROW_H，lane 就斷掉
+    const badge = (ref: Ref, color: string) => {
+      const [icon, tint, name] =
+        ref.kind === 'tag' ? ['◆', '#f2c94c', clip(ref.name)]
+          : ref.kind === 'detached' ? ['◉', color, 'HEAD']
+            : ['⎇', color, clip(ref.name)]
+      return (
+        <Box key={`ref:${ref.kind}:${'name' in ref ? ref.name : ''}`} flexShrink={0}>
+          <Text backgroundColor={tint} color="#000" bold> {icon} </Text>
+          <Text color={tint} bold={ref.kind === 'branch' && ref.isHead}> {name} </Text>
+          {ref.kind === 'branch' && ref.remotes.length > 0 && <Text color={tint} italic>│ {ref.remotes.join(' ')} </Text>}
+        </Box>
+      )
+    }
+
     const columns = (date: string, author: string, dim: boolean) => [
       wide && <Box width={13} flexShrink={0}><Text dimColor={dim}>{date}</Text></Box>,
       wide && <Box width={12} flexShrink={0}><Text dimColor={dim} wrap="truncate-end">{author}</Text></Box>,
     ]
 
+    const toggle = (hash: string) => () => void update($, selected, s => (s === hash ? '' : hash))
+
     const row = (c: Commit, i: number) => {
       const isSel = c.hash === sel
       const isMerge = c.parents.length > 1
-      const color = laneColor(rows[i]!.col)
+      const { col, cells, segments } = rows[i]!
+      const color = laneColor(col)
+      const strokes: Stroke[] = i === 0 && wipLinked ? [{ x1: col, y1: 'top', x2: col, y2: 'mid', lane: col, dashed: true }, ...segments] : segments
       return (
-        <Box key={`row:${c.hash}`} columnGap={1} backgroundColor={isSel ? SELECTED : undefined} hover={{ backgroundColor: HOVER }}>
-          <Box width={graphW} flexShrink={0} overflow="hidden"><Text>{graph(rows[i]!.cells)}</Text></Box>
-          <Box flexGrow={1} flexShrink={1} overflow="hidden">
-            <Text wrap="truncate-end">
-              {c.refs.map(r => pill(r, color))}
-              <Text dimColor={isMerge && !isSel} bold={isSel}>{c.subject}</Text>
-            </Text>
+        <Box key={`row:${c.hash}`} columnGap={1} alignItems="center" backgroundColor={isSel ? SELECTED : undefined} hover={{ backgroundColor: HOVER }}>
+          {cell(cells, strokes, { col, color, hollow: i === head })}
+          <Box flexGrow={1} flexShrink={1} overflow="hidden" columnGap={1} alignItems="center">
+            {Svg && c.refs.map(r => badge(r, color))}
+            {/* 點描述就選取（Box 不能按，只有 Button 能；Button 只收 Text） */}
+            <Button key={`d:${c.hash}`} label={c.subject} plain onPress={toggle(c.hash)}>
+              <Text wrap="truncate-end">
+                {!Svg && c.refs.map(r => pill(r, color))}
+                <Text dimColor={isMerge && !isSel} bold={isSel}>{subject(c)}</Text>
+              </Text>
+            </Button>
           </Box>
           {columns(fmtDate(c.time), c.author, isMerge)}
           <Box width={8} flexShrink={0}>
-            <Button key={`c:${c.hash}`} plain dimColor={!isSel} onPress={() => void update($, selected, s => (s === c.hash ? '' : c.hash))}>
+            <Button key={`c:${c.hash}`} plain dimColor={!isSel} onPress={toggle(c.hash)}>
               {c.hash.slice(0, 8)}
             </Button>
           </Box>
@@ -192,7 +246,7 @@ export const register: Register = on => {
     const confirm = (key: string, run: () => Promise<void>) => async () => {
       if (armedKey !== key) {
         await update($, armed, () => key)
-        return void $.ui.toast('再按一次確認')
+        return void $.ui.toast('Press again to confirm')
       }
       await update($, armed, () => '')
       await run()
@@ -208,7 +262,7 @@ export const register: Register = on => {
       const short = c.hash.slice(0, 8)
       const color = laneColor(rows[selIdx]!.col)
       return (
-        <Box flexDirection="column" borderStyle="round" borderColor={color} paddingX={1}>
+        <Box key="details" flexDirection="column" borderStyle="round" borderColor={color} paddingX={1}>
           <Box gap={2}>
             <Text color={color} bold>{c.hash}</Text>
             <Text dimColor>{c.author}</Text>
@@ -252,7 +306,7 @@ export const register: Register = on => {
                 </Button>
               )}
               <Button key={`td:${tag}`} plain onPress={() => void confirm(`td:${tag}`, () => act($, `deleted tag ${tag}`, ['tag', '-d', tag]))()}>
-                {armedKey === `td:${tag}` ? '✕ 確認刪除?' : '✕ delete'}
+                {armedKey === `td:${tag}` ? '✕ confirm delete?' : '✕ delete'}
               </Button>
               {target && (
                 <Button
@@ -260,7 +314,7 @@ export const register: Register = on => {
                   plain
                   onPress={() => void confirm(`tr:${tag}`, () => act($, `deleted tag ${tag} on ${target}`, ['push', target, '--delete', `refs/tags/${tag}`]))()}
                 >
-                  {armedKey === `tr:${tag}` ? `✕ 確認刪除 ${target}?` : `✕ ${target}`}
+                  {armedKey === `tr:${tag}` ? `✕ confirm delete on ${target}?` : `✕ ${target}`}
                 </Button>
               )}
               {Input && (
@@ -280,7 +334,7 @@ export const register: Register = on => {
                       ? await git($, ['tag', '-a', next, c.hash, '-m', msg.stdout.trim() || next])
                       : await git($, ['tag', next, c.hash])
                     if (made.exitCode !== 0) return void $.ui.toast(made.stderr.trim() || 'rename failed')
-                    await act($, `renamed ${tag} → ${next}（遠端需另外 push / 刪除）`, ['tag', '-d', tag])
+                    await act($, `renamed ${tag} → ${next} (push/delete on the remote separately)`, ['tag', '-d', tag])
                   }}
                 />
               )}
@@ -304,7 +358,7 @@ export const register: Register = on => {
             <Button key="down" plain hotkey="j" onPress={() => void move(1)}>↓</Button>
             <Button key="refresh" plain hotkey="r" onPress={() => void refresh($)}>⟳</Button>
             {picked && <Button key="close" plain hotkey="x" onPress={() => void update($, selected, () => '')}>✕</Button>}
-            <Button key="quit" plain hotkey="q" onPress={() => void $.ui.close({ id: PANE })}>關閉</Button>
+            <Button key="quit" plain hotkey="q" onPress={() => void $.ui.close({ id: PANE })}>Close</Button>
           </Box>
         </Box>
         <Box columnGap={2} flexWrap="wrap">
@@ -328,7 +382,9 @@ export const register: Register = on => {
           )}
         </Box>
         <Box columnGap={1}>
-          <Box width={graphW} flexShrink={0}><Text bold dimColor>Graph</Text></Box>
+          {Svg
+            ? <Box flexDirection="column" flexShrink={0}><Text bold dimColor>Graph</Text><Svg source={`<svg xmlns="http://www.w3.org/2000/svg" width="${svgW}" height="1"/>`} alt="" width={svgW} height={1} /></Box>
+            : <Box width={graphW} flexShrink={0}><Text bold dimColor>Graph</Text></Box>}
           <Box flexGrow={1}><Text bold dimColor>Description</Text></Box>
           {wide && <Box width={13} flexShrink={0}><Text bold dimColor>Date</Text></Box>}
           {wide && <Box width={12} flexShrink={0}><Text bold dimColor>Author</Text></Box>}
@@ -336,17 +392,17 @@ export const register: Register = on => {
         </Box>
         <Box height={1} overflow="hidden"><Text dimColor wrap="wrap">{'─'.repeat(width)}</Text></Box>
         {changes > 0 && start === 0 && (
-          <Box key="row:wip" columnGap={1} hover={{ backgroundColor: HOVER }}>
-            <Box width={graphW} flexShrink={0}>
-              <Text>{' '.repeat(headCol * 2)}<Text color={laneColor(headCol)}>◌</Text></Text>
-            </Box>
+          <Box key="row:wip" columnGap={1} alignItems="center" hover={{ backgroundColor: HOVER }}>
+            {Svg
+              ? cell([], wipLinked ? [{ x1: headCol, y1: 'mid', x2: headCol, y2: 'bottom', lane: headCol, dashed: true }] : [], { col: headCol, color: WIP_COLOR, hollow: true })
+              : <Box width={graphW} flexShrink={0}><Text mono>{' '.repeat(headCol * 2)}<Text color={laneColor(headCol)}>◌</Text></Text></Box>}
             <Box flexGrow={1} flexShrink={1}><Text bold wrap="truncate-end">Uncommitted Changes ({changes})</Text></Box>
             {columns(fmtDate(Date.now() / 1000), '*', false)}
             <Box width={8} flexShrink={0}><Text dimColor>*</Text></Box>
           </Box>
         )}
-        {list.slice(start, start + room).map((c, i) => row(c, start + i))}
-        {picked && actions(picked)}
+        {/* 詳細面板接在選取的 commit 下方（vscode-git-graph 的位置），不必捲到底 */}
+        {list.slice(start, start + room).flatMap((c, i) => (c.hash === sel ? [row(c, start + i), actions(c)] : [row(c, start + i)]))}
       </Box>
     )
   })
